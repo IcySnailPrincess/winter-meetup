@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>yearly winter meet up ❄️</title>
+<meta name="description" content="Mark when you're free: Dec 15, 2026 – Jan 10, 2027">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+<style>
+  :root {
+    --bg: #f5f7fb; --card: #fff; --ink: #1d2433; --muted: #6b7385; --line: #e3e7ef;
+    --free: #2f9e6b; --maybe: #e8b23a; --busy: #d9534f; --accent: #3b6fd9;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); }
+  main { max-width: 760px; margin: 0 auto; padding: 20px 14px 60px; }
+  h1 { font-size: 26px; margin: 4px 0 2px; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  h2 { font-size: 17px; margin: 0 0 10px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tabs button { flex: 1; padding: 10px; border: 1px solid var(--line); background: var(--card); border-radius: 10px; font: inherit; font-weight: 600; cursor: pointer; color: var(--muted); }
+  .tabs button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  label.name { display: block; font-weight: 600; margin-bottom: 6px; }
+  input[type=text] { width: 100%; padding: 10px 12px; font: inherit; font-size: 16px; border: 1px solid var(--line); border-radius: 10px; }
+  .who { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: #eef2fa; border: 1px solid var(--line); cursor: pointer; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--muted); margin: 10px 0; }
+  .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; background: var(--c); }
+  .quick { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .quick button, .btn { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font: inherit; font-size: 13px; cursor: pointer; }
+  .brush { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
+  .brush button { padding: 6px 12px; border-radius: 999px; border: 2px solid transparent; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; color: #fff; }
+  .brush button[data-v=free] { background: var(--free); } .brush button[data-v=maybe] { background: var(--maybe); }
+  .brush button[data-v=busy] { background: var(--busy); } .brush button[data-v=""] { background: #9aa1b0; }
+  .brush button.on { border-color: var(--ink); box-shadow: 0 0 0 2px #fff inset; }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .dow { text-align: center; font-size: 12px; color: var(--muted); font-weight: 600; padding-bottom: 2px; }
+  .day { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: #fafbfd; display: flex; flex-direction: column; min-height: 74px; }
+  .day.out { visibility: hidden; }
+  .day .d { font-size: 12px; font-weight: 600; padding: 3px 5px; color: var(--muted); }
+  .day .d b { color: var(--ink); }
+  .half { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); border-top: 1px solid var(--line); cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none; min-height: 26px; }
+  .half.free { background: var(--free); color: #fff; } .half.maybe { background: var(--maybe); color: #fff; } .half.busy { background: var(--busy); color: #fff; }
+  .save { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .save button { padding: 11px 20px; background: var(--accent); color: #fff; border: 0; border-radius: 10px; font: inherit; font-weight: 700; cursor: pointer; }
+  .save button:disabled { opacity: .5; cursor: default; }
+  #status { font-size: 14px; color: var(--muted); }
+  .grp .half { cursor: pointer; font-weight: 600; }
+  .best li { margin: 4px 0; }
+  .best .n { color: var(--muted); font-size: 13px; }
+  #detail { min-height: 40px; font-size: 14px; }
+  #detail .row { margin: 2px 0; }
+  .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; color: #fff; margin: 1px 2px; }
+  .hidden { display: none; }
+  .month { grid-column: 1 / -1; font-weight: 700; margin: 8px 0 2px; font-size: 14px; }
+  .err { color: var(--busy); }
+  @media (max-width: 480px) { .day { min-height: 66px; } .half { font-size: 10px; } h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>❄️ yearly winter meet up</h1>
+  <p class="sub">Dec 15, 2026 – Jan 10, 2027 · mark the mornings/afternoons you're free</p>
+
+  <div class="tabs">
+    <button id="tabMine" class="on">✏️ My availability</button>
+    <button id="tabGroup">👥 Group results</button>
+  </div>
+
+  <section id="mine">
+    <div class="card">
+      <label class="name" for="name">Your name</label>
+      <input type="text" id="name" maxlength="40" placeholder="e.g. Amanda" autocomplete="given-name">
+      <div class="who" id="existing"></div>
+    </div>
+
+    <div class="card">
+      <div class="brush" id="brush">Paint:
+        <button data-v="free" class="on">Free</button>
+        <button data-v="maybe">Maybe</button>
+        <button data-v="busy">Busy</button>
+        <button data-v="">Erase</button>
+      </div>
+      <div class="quick">
+        <button data-q="all">All free</button>
+        <button data-q="weekends">Weekends free</button>
+        <button data-q="evenings">All afternoons free</button>
+        <button data-q="clear">Clear</button>
+      </div>
+      <div class="cal" id="cal"></div>
+      <div class="save">
+        <button id="saveBtn">Save my availability</button>
+        <span id="status"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="group" class="hidden">
+    <div class="card">
+      <h2>Best times</h2>
+      <ol class="best" id="best"><li class="n">No responses yet.</li></ol>
+    </div>
+    <div class="card grp">
+      <h2>Everyone (<span id="count">0</span>)</h2>
+      <div class="legend"><span style="--c:#2f9e6b">more people free</span><span style="--c:#dde3ee">fewer</span></div>
+      <div class="cal" id="gcal"></div>
+      <div id="detail" class="sub" style="margin-top:12px">Tap a half day to see who's free.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxD31Mkb6vdxr9tUU1D5RdFLbQXqlRpoT55-0qTG-z96XEajBJ83p95_Yhyt1gNHqPnw/exec";
+const START = new Date(2026, 11, 15), END = new Date(2027, 0, 10);
+const HALVES = ["AM", "PM"];
+const pad = n => String(n).padStart(2, "0");
+const key = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const DAYS = []; for (let d = new Date(START); d <= END; d.setDate(d.getDate() + 1)) DAYS.push(new Date(d));
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const label = k => { const [y,m,d,h] = k.split("-"); const dt = new Date(+y, m-1, +d); return `${DOW[dt.getDay()]} ${MONTHS[dt.getMonth()]} ${+d} ${h === "AM" ? "morning" : "afternoon/evening"}`; };
+
+let mine = {}, all = [], brush = "free", dirty = false;
+const $ = id => document.getElementById(id);
+
+function buildCal(el, onCell) {
+  el.innerHTML = "";
+  DOW.forEach(n => el.insertAdjacentHTML("beforeend", `<div class="dow">${n}</div>`));
+  let lastMonth = -1;
+  DAYS.forEach((d, i) => {
+    if (d.getMonth() !== lastMonth) {
+      if (i > 0) { // pad end of previous month's week
+        for (let j = d.getDay(); j < 7 && d.getDay() !== 0; j++) el.insertAdjacentHTML("beforeend", `<div class="day out"></div>`);
+      }
+      el.insertAdjacentHTML("beforeend", `<div class="month">${MONTHS[d.getMonth()]} ${d.getFullYear()}</div>`);
+      for (let j = 0; j < d.getDay(); j++) el.insertAdjacentHTML("beforeend", `<div class="day out"></div>`);
+      lastMonth = d.getMonth();
+    }
+    const k = key(d);
+    const day = document.createElement("div");
+    day.className = "day";
+    day.innerHTML = `<div class="d"><b>${d.getDate()}</b> ${MONTHS[d.getMonth()]}</div>`;
+    HALVES.forEach(h => {
+      const c = document.createElement("div");
+      c.className = "half"; c.dataset.k = `${k}-${h}`; c.textContent = h === "AM" ? "AM" : "PM";
+      day.appendChild(c); onCell && onCell(c);
+    });
+    el.appendChild(day);
+  });
+}
+
+// ---- my availability ----
+function paintMine() {
+  document.querySelectorAll("#cal .half").forEach(c => {
+    const v = mine[c.dataset.k] || "";
+    c.className = "half " + v;
+    c.textContent = (c.dataset.k.endsWith("AM") ? "AM" : "PM") + (v ? " · " + v : "");
+  });
+}
+function setCell(k, v) { if (v) mine[k] = v; else delete mine[k]; dirty = true; status(""); }
+
+let painting = false;
+buildCal($("cal"));
+const cal = $("cal");
+cal.addEventListener("pointerdown", e => {
+  const c = e.target.closest(".half"); if (!c) return;
+  painting = true; cal.setPointerCapture(e.pointerId);
+  setCell(c.dataset.k, mine[c.dataset.k] === brush ? "" : brush); paintMine();
+  e.preventDefault();
+});
+cal.addEventListener("pointermove", e => {
+  if (!painting) return;
+  const c = document.elementFromPoint(e.clientX, e.clientY)?.closest?.("#cal .half");
+  if (c && mine[c.dataset.k] !== brush && !(brush === "" && !mine[c.dataset.k])) { setCell(c.dataset.k, brush); paintMine(); }
+});
+["pointerup", "pointercancel"].forEach(t => cal.addEventListener(t, () => painting = false));
+
+$("brush").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  brush = b.dataset.v;
+  document.querySelectorAll("#brush button").forEach(x => x.classList.toggle("on", x === b));
+});
+document.querySelector(".quick").addEventListener("click", e => {
+  const q = e.target.dataset.q; if (!q) return;
+  DAYS.forEach(d => HALVES.forEach(h => {
+    const k = `${key(d)}-${h}`, wkend = d.getDay() === 0 || d.getDay() === 6;
+    if (q === "all") mine[k] = "free";
+    if (q === "weekends" && wkend) mine[k] = "free";
+    if (q === "evenings" && h === "PM") mine[k] = "free";
+    if (q === "clear") delete mine[k];
+  }));
+  dirty = true; status(""); paintMine();
+});
+
+function status(t, err) { $("status").textContent = t; $("status").className = err ? "err" : ""; }
+
+$("name").addEventListener("change", loadMineFromName);
+function loadMineFromName() {
+  const n = $("name").value.trim().toLowerCase();
+  const r = all.find(x => x.name.trim().toLowerCase() === n);
+  if (r && (!dirty || confirm(`Load the saved answers for "${r.name}"? Unsaved changes will be lost.`))) {
+    mine = { ...r.slots }; dirty = false; paintMine(); status(`Loaded ${r.name}'s saved answers.`);
+  }
+}
+
+$("saveBtn").addEventListener("click", async () => {
+  const name = $("name").value.trim();
+  if (!name) { status("Enter your name first ↑", true); $("name").focus(); return; }
+  if (!Object.keys(mine).length) { status("Mark at least one half day.", true); return; }
+  $("saveBtn").disabled = true; status("Saving…");
+  try {
+    const res = await fetch(SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ name, slots: mine }) });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    all = data; dirty = false; localStorage.setItem("wm-name", name);
+    status("Saved ✓ — check Group results!"); renderGroup();
+  } catch (err) { status("Couldn't save: " + err.message + ". Try again?", true); }
+  $("saveBtn").disabled = false;
+});
+
+// ---- group ----
+buildCal($("gcal"));
+function renderGroup() {
+  $("count").textContent = all.length;
+  $("existing").innerHTML = all.length ? `<span class="sub" style="margin:0;font-size:13px">Already responded (tap to edit yours):</span>` + all.map(r => `<span class="chip">${esc(r.name)}</span>`).join("") : "";
+  const scores = {};
+  document.querySelectorAll("#gcal .half").forEach(c => {
+    const k = c.dataset.k;
+    const free = all.filter(r => r.slots[k] === "free").length, maybe = all.filter(r => r.slots[k] === "maybe").length;
+    const s = free + maybe * 0.5; scores[k] = { s, free, maybe };
+    const t = all.length ? s / all.length : 0;
+    c.style.background = t ? `color-mix(in srgb, var(--free) ${Math.round(15 + t * 85)}%, #eef1f6)` : "";
+    c.style.color = t > 0.45 ? "#fff" : "";
+    c.textContent = all.length ? `${free}${maybe ? "+" + maybe + "?" : ""}` : (k.endsWith("AM") ? "AM" : "PM");
+  });
+  const top = Object.entries(scores).filter(([, v]) => v.s > 0).sort((a, b) => b[1].s - a[1].s || a[0].localeCompare(b[0])).slice(0, 5);
+  $("best").innerHTML = top.length ? top.map(([k, v]) => `<li><b>${label(k)}</b> <span class="n">— ${v.free} free${v.maybe ? `, ${v.maybe} maybe` : ""} of ${all.length}</span></li>`).join("") : `<li class="n">No responses yet.</li>`;
+}
+$("gcal").addEventListener("click", e => {
+  const c = e.target.closest(".half"); if (!c) return;
+  const k = c.dataset.k, by = v => all.filter(r => r.slots[k] === v).map(r => r.name);
+  const pills = (names, col) => names.map(n => `<span class="pill" style="background:var(--${col})">${esc(n)}</span>`).join("") || "<span class='n'>—</span>";
+  const none = all.filter(r => !r.slots[k]).map(r => r.name);
+  $("detail").innerHTML = `<div class="row"><b>${label(k)}</b></div>
+    <div class="row">Free: ${pills(by("free"), "free")}</div>
+    <div class="row">Maybe: ${pills(by("maybe"), "maybe")}</div>
+    <div class="row">Busy: ${pills(by("busy"), "busy")}</div>
+    ${none.length ? `<div class="row">No answer: ${none.map(esc).join(", ")}</div>` : ""}`;
+});
+$("existing").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  $("name").value = c.textContent; loadMineFromName();
+});
+function esc(s) { return String(s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])); }
+
+// ---- tabs ----
+function show(which) {
+  $("mine").classList.toggle("hidden", which !== "mine"); $("group").classList.toggle("hidden", which !== "group");
+  $("tabMine").classList.toggle("on", which === "mine"); $("tabGroup").classList.toggle("on", which === "group");
+  if (which === "group") load();
+}
+$("tabMine").onclick = () => show("mine"); $("tabGroup").onclick = () => show("group");
+
+async function load() {
+  try {
+    const res = await fetch(SCRIPT_URL);
+    all = await res.json(); renderGroup();
+    return true;
+  } catch (err) { status("Couldn't load responses — refresh to retry.", true); return false; }
+}
+window.addEventListener("beforeunload", e => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+(async () => {
+  paintMine();
+  const saved = localStorage.getItem("wm-name");
+  if (saved) $("name").value = saved;
+  await load();
+  if (saved) loadMineFromName();
+})();
+</script>
+</body>
+</html>
