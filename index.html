@@ -52,7 +52,28 @@
   #detail { min-height: 40px; font-size: 14px; }
   #detail .row { margin: 2px 0; }
   .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; color: #fff; margin: 1px 2px; }
-  .hidden { display: none; }
+  .hidden { display: none !important; }
+  .small { font-size: 13px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } .tabs button { font-size: 13px; padding: 9px 4px; } }
+  textarea, select, input[type=password] { width: 100%; padding: 10px 12px; font: inherit; font-size: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  select { width: auto; min-width: 120px; }
+  .btn2 { padding: 9px 14px !important; background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line) !important; font-weight: 600; }
+  h3 { font-size: 15px; margin: 18px 0 8px; }
+  details summary { cursor: pointer; }
+  .santa-hero { background: linear-gradient(135deg, #fff 60%, #fde8e8); }
+  .reveal { margin-top: 14px; padding: 14px; border-radius: 12px; background: #fff6f0; border: 1px solid #f6d5c3; }
+  .reveal .big { font-size: 22px; font-weight: 800; margin: 2px 0 8px; }
+  .wish { white-space: pre-wrap; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+  .thread { margin-top: 14px; }
+  .msg { max-width: 85%; padding: 7px 11px; border-radius: 12px; margin: 5px 0; font-size: 14px; white-space: pre-wrap; }
+  .msg.me { background: var(--accent); color: #fff; margin-left: auto; }
+  .msg.them { background: #eef1f6; }
+  .msg .t { display: block; font-size: 11px; opacity: .7; margin-top: 2px; }
+  .msgs { display: flex; flex-direction: column; }
+  .exlist { padding-left: 18px; margin: 6px 0; }
+  .exlist button { margin-left: 8px; font-size: 12px; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+  .ok { color: var(--free); }
   .month { grid-column: 1 / -1; font-weight: 700; margin: 8px 0 2px; font-size: 14px; }
   .err { color: var(--busy); }
   @media (max-width: 480px) { .day { min-height: 66px; } .half { font-size: 10px; } h1 { font-size: 22px; } }
@@ -66,6 +87,7 @@
   <div class="tabs">
     <button id="tabMine" class="on">✏️ My availability</button>
     <button id="tabGroup">👥 Group results</button>
+    <button id="tabSanta">🎅 Secret Santa</button>
   </div>
 
   <section id="mine">
@@ -107,6 +129,68 @@
       <div class="cal" id="gcal"></div>
       <div id="detail" class="sub" style="margin-top:12px">Tap a half day to see who's free.</div>
     </div>
+  </section>
+
+  <section id="santa" class="hidden">
+    <div class="card santa-hero">
+      <h2>🎅 Secret Santa</h2>
+      <div id="sInfo" class="sub" style="margin:0">Loading…</div>
+      <div class="who" id="sPeople"></div>
+    </div>
+
+    <div class="card">
+      <h2>1 · Join (or edit your wishlist)</h2>
+      <div class="grid2">
+        <div><label class="name" for="sjName">Your name</label><input type="text" id="sjName" maxlength="40" placeholder="e.g. Amanda"></div>
+        <div><label class="name" for="sjPin">Pick a PIN (4–8 digits)</label><input type="password" id="sjPin" inputmode="numeric" maxlength="8" placeholder="you'll need this later"></div>
+      </div>
+      <label class="name" for="sjWish" style="margin-top:10px">Wishlist / gift ideas</label>
+      <textarea id="sjWish" maxlength="1000" rows="3" placeholder="likes, sizes, things you don't want…"></textarea>
+      <div class="save"><button id="sjBtn">Join Secret Santa</button><span id="sjStatus"></span></div>
+      <p class="sub small">Already joined? Enter the same name + PIN to update your wishlist. Don't forget your PIN!</p>
+    </div>
+
+    <div class="card">
+      <h2>2 · Who do I have? 🤫</h2>
+      <div class="grid2">
+        <div><label class="name" for="smName">Your name</label><input type="text" id="smName" maxlength="40"></div>
+        <div><label class="name" for="smPin">Your PIN</label><input type="password" id="smPin" inputmode="numeric" maxlength="8"></div>
+      </div>
+      <div class="save"><button id="smBtn">Reveal</button><span id="smStatus"></span></div>
+      <div id="smOut"></div>
+    </div>
+
+    <details class="card" id="orgCard">
+      <summary><b>Organizer</b> <span class="sub small">— settings, exclusions, draw</span></summary>
+      <div id="orgClaim" class="hidden" style="margin-top:12px">
+        <p class="sub small">No organizer yet. Set an organizer PIN — only you should know it.</p>
+        <div class="save" style="margin-top:6px"><input type="password" id="orgNewPin" inputmode="numeric" maxlength="8" placeholder="new organizer PIN" style="max-width:220px"><button id="orgClaimBtn">Set organizer PIN</button></div>
+      </div>
+      <div id="orgLogin" style="margin-top:12px">
+        <div class="save" style="margin-top:0"><input type="password" id="orgPin" inputmode="numeric" maxlength="8" placeholder="organizer PIN" style="max-width:220px"><button id="orgLoginBtn">Unlock</button></div>
+      </div>
+      <div id="orgPanel" class="hidden" style="margin-top:14px">
+        <div class="grid2">
+          <div><label class="name" for="orgBudget">Budget</label><input type="text" id="orgBudget" maxlength="40" placeholder="$30"></div>
+          <div><label class="name" for="orgDate">Gift exchange date</label><input type="text" id="orgDate" maxlength="40" placeholder="Dec 27, evening"></div>
+        </div>
+        <div class="save"><button class="btn2" id="orgSaveSettings">Save budget & date</button></div>
+        <h3>Exclusions <span class="sub small">(these two can't draw each other)</span></h3>
+        <div class="save" style="margin-top:0;flex-wrap:wrap">
+          <select id="exA"></select><span>↔</span><select id="exB"></select><button class="btn2" id="exAdd">Add</button>
+        </div>
+        <ul id="exList" class="exlist"></ul>
+        <h3>Draw</h3>
+        <div class="save" style="margin-top:0;flex-wrap:wrap">
+          <button id="orgDraw">Draw names</button>
+          <button class="btn2" id="orgReset">Undo draw</button>
+        </div>
+        <p class="sub small">Redrawing reshuffles everyone and clears all anonymous messages. You won't see who has whom.</p>
+        <h3>Remove a person</h3>
+        <div class="save" style="margin-top:0"><select id="rmName"></select><button class="btn2" id="rmBtn">Remove</button></div>
+      </div>
+      <div id="orgStatus" style="margin-top:10px"></div>
+    </details>
   </section>
 </main>
 
@@ -255,26 +339,146 @@ $("existing").addEventListener("click", e => {
 function esc(s) { return String(s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])); }
 
 // ---- tabs ----
+const TABS = { mine: "tabMine", group: "tabGroup", santa: "tabSanta" };
 function show(which) {
-  $("mine").classList.toggle("hidden", which !== "mine"); $("group").classList.toggle("hidden", which !== "group");
-  $("tabMine").classList.toggle("on", which === "mine"); $("tabGroup").classList.toggle("on", which === "group");
-  if (which === "group") load();
+  Object.entries(TABS).forEach(([sec, btn]) => { $(sec).classList.toggle("hidden", sec !== which); $(btn).classList.toggle("on", sec === which); });
+  if (which !== "mine") load();
+  history.replaceState(null, "", which === "mine" ? location.pathname : "#" + which);
 }
-$("tabMine").onclick = () => show("mine"); $("tabGroup").onclick = () => show("group");
+Object.entries(TABS).forEach(([sec, btn]) => $(btn).onclick = () => show(sec));
 
+let santa = { people: [], drawn: false };
 async function load() {
   try {
     const res = await fetch(SCRIPT_URL);
-    all = await res.json(); renderGroup();
+    const d = await res.json();
+    all = Array.isArray(d) ? d : d.availability; if (d.santa) santa = d.santa;
+    renderGroup(); renderSanta();
     return true;
   } catch (err) { status("Couldn't load responses — refresh to retry.", true); return false; }
 }
+
+// ---- secret santa ----
+async function api(body) {
+  const res = await fetch(SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) });
+  const d = await res.json();
+  if (d && d.error) throw new Error(d.error);
+  return d;
+}
+function say(id, t, cls) { $(id).textContent = t; $(id).className = cls || ""; }
+async function busy(btn, fn) { $(btn).disabled = true; try { await fn(); } finally { $(btn).disabled = false; } }
+function fmtTime(iso) { if (!iso) return ""; const d = new Date(iso); return d.toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); }
+
+function renderSanta() {
+  const bits = [];
+  bits.push(santa.drawn ? "✅ Names have been drawn — use “Who do I have?” below." : `🎁 ${santa.people.length} joined so far · names not drawn yet`);
+  if (santa.budget) bits.push(`💰 Budget: <b>${esc(santa.budget)}</b>`);
+  if (santa.date) bits.push(`📅 Exchange: <b>${esc(santa.date)}</b>`);
+  $("sInfo").innerHTML = bits.join("<br>");
+  $("sPeople").innerHTML = santa.people.map(n => `<span class="chip">${esc(n)}</span>`).join("");
+  $("orgClaim").classList.toggle("hidden", !!santa.organizerSet);
+  $("orgLogin").classList.toggle("hidden", !santa.organizerSet || orgPin !== null);
+  const opts = santa.people.map(n => `<option>${esc(n)}</option>`).join("");
+  ["exA", "exB", "rmName"].forEach(id => { const v = $(id).value; $(id).innerHTML = opts; if (v) $(id).value = v; });
+  if ($("exB").selectedIndex === 0 && santa.people.length > 1 && $("exA").value === $("exB").value) $("exB").selectedIndex = 1;
+}
+
+$("sjBtn").onclick = () => busy("sjBtn", async () => {
+  const name = $("sjName").value.trim(), pin = $("sjPin").value.trim();
+  try {
+    say("sjStatus", "Saving…");
+    const existed = santa.people.some(n => n.toLowerCase() === name.toLowerCase());
+    santa = await api({ action: "santaJoin", name, pin, wishlist: $("sjWish").value });
+    renderSanta();
+    say("sjStatus", existed ? "Wishlist updated ✓" : "You're in! 🎄", "ok");
+    localStorage.setItem("wm-name", name);
+    $("smName").value = name;
+  } catch (e) { say("sjStatus", e.message, "err"); }
+});
+
+let me = null;
+function creds() { return { name: $("smName").value.trim(), pin: $("smPin").value.trim() }; }
+function renderMe() {
+  if (!me) { $("smOut").innerHTML = ""; return; }
+  $("sjName").value = me.name; if (!$("sjWish").value) $("sjWish").value = me.wishlist;
+  if (!me.drawn || !me.giftee) {
+    $("smOut").innerHTML = `<div class="reveal">Hi ${esc(me.name)}! Names haven't been drawn yet — check back after the organizer draws. 🎄</div>`;
+    return;
+  }
+  const thread = (list, mine, theirs) => list.length
+    ? list.map(m => `<div class="msg ${m.from === mine ? "me" : "them"}">${esc(m.text)}<span class="t">${m.from === mine ? "you" : theirs} · ${fmtTime(m.time)}</span></div>`).join("")
+    : `<p class="sub small" style="margin:4px 0">No messages yet.</p>`;
+  $("smOut").innerHTML = `
+    <div class="reveal">
+      <div class="sub small" style="margin:0">You're the Secret Santa for</div>
+      <div class="big">🎁 ${esc(me.giftee.name)}</div>
+      <div class="small"><b>Their wishlist</b></div>
+      <div class="wish">${me.giftee.wishlist ? esc(me.giftee.wishlist) : "<span class='sub'>(nothing yet)</span>"}</div>
+    </div>
+    <div class="thread">
+      <h3>💬 Ask ${esc(me.giftee.name)} anonymously</h3>
+      <div class="msgs">${thread(me.threads.giftee, "santa", esc(me.giftee.name))}</div>
+      <div class="save" style="margin-top:6px"><input type="text" id="toGiftee" maxlength="500" placeholder="e.g. what's your shoe size?"><button class="btn2" data-to="giftee">Send</button></div>
+    </div>
+    <div class="thread">
+      <h3>🎅 Messages with your Secret Santa</h3>
+      <div class="msgs">${thread(me.threads.santa, "giftee", "your Santa")}</div>
+      <div class="save" style="margin-top:6px"><input type="text" id="toSanta" maxlength="500" placeholder="reply to your Santa"><button class="btn2" data-to="santa">Send</button></div>
+    </div>
+    <p class="sub small" style="margin-top:12px">Messages to your giftee show up as from “your Santa”. Keep it secret! 🤫</p>`;
+}
+$("smBtn").onclick = () => busy("smBtn", async () => {
+  try {
+    say("smStatus", "Checking…");
+    me = await api({ action: "santaMe", ...creds() });
+    say("smStatus", ""); renderMe();
+    sessionStorage.setItem("wm-santa", JSON.stringify(creds()));
+  } catch (e) { me = null; renderMe(); say("smStatus", e.message, "err"); }
+});
+$("smOut").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-to]"); if (!b) return;
+  const input = $(b.dataset.to === "giftee" ? "toGiftee" : "toSanta");
+  const text = input.value.trim(); if (!text) return;
+  b.disabled = true;
+  try { me = await api({ action: "santaMsg", ...creds(), to: b.dataset.to, text }); renderMe(); }
+  catch (err) { say("smStatus", err.message, "err"); b.disabled = false; }
+});
+$("smOut").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input")) e.target.nextElementSibling.click(); });
+
+// organizer
+let orgPin = null, excl = [];
+async function org(op, extra) {
+  const d = await api({ action: "santaAdmin", pin: orgPin, op, ...(extra || {}) });
+  santa = d; excl = d.exclusions || []; renderSanta(); renderExcl();
+  return d;
+}
+function renderExcl() {
+  $("exList").innerHTML = excl.length ? excl.map((p, i) => `<li>${esc(p[0])} ↔ ${esc(p[1])}<button data-i="${i}">remove</button></li>`).join("") : `<li class="sub small" style="list-style:none;margin-left:-18px">None</li>`;
+}
+function unlocked() { $("orgPanel").classList.remove("hidden"); $("orgLogin").classList.add("hidden"); $("orgClaim").classList.add("hidden"); $("orgBudget").value = santa.budget || ""; $("orgDate").value = santa.date || ""; }
+$("orgClaimBtn").onclick = () => busy("orgClaimBtn", async () => {
+  try { orgPin = $("orgNewPin").value.trim(); await org("claim"); unlocked(); say("orgStatus", "Organizer PIN set ✓ — remember it!", "ok"); }
+  catch (e) { orgPin = null; say("orgStatus", e.message, "err"); }
+});
+$("orgLoginBtn").onclick = () => busy("orgLoginBtn", async () => {
+  try { orgPin = $("orgPin").value.trim(); await org("login"); unlocked(); say("orgStatus", ""); }
+  catch (e) { orgPin = null; say("orgStatus", e.message, "err"); }
+});
+const orgAct = (btn, fn, okMsg) => $(btn).onclick = () => busy(btn, async () => { try { say("orgStatus", "Working…"); await fn(); say("orgStatus", okMsg, "ok"); } catch (e) { say("orgStatus", e.message, "err"); } });
+orgAct("orgSaveSettings", () => org("settings", { budget: $("orgBudget").value, date: $("orgDate").value }), "Saved ✓");
+orgAct("exAdd", () => { const a = $("exA").value, b = $("exB").value; if (!a || !b || a === b) throw new Error("Pick two different people."); return org("exclusions", { pairs: [...excl, [a, b]] }); }, "Exclusion added ✓");
+$("exList").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; const pairs = excl.filter((_, i) => i !== +b.dataset.i); org("exclusions", { pairs }).then(() => say("orgStatus", "Removed ✓", "ok"), err => say("orgStatus", err.message, "err")); });
+orgAct("orgDraw", () => { if (santa.drawn && !confirm("Redraw? Everyone gets a new person and all messages are cleared.")) throw new Error("Cancelled."); return org("draw"); }, "Names drawn ✓ Tell everyone to check “Who do I have?”");
+orgAct("orgReset", () => { if (!confirm("Undo the draw? Assignments and messages will be cleared.")) throw new Error("Cancelled."); return org("reset"); }, "Draw undone ✓");
+orgAct("rmBtn", () => { const n = $("rmName").value; if (!n || !confirm(`Remove ${n} from Secret Santa?` + (santa.drawn ? " This also undoes the draw." : ""))) throw new Error("Cancelled."); return org("remove", { name: n }); }, "Removed ✓");
 window.addEventListener("beforeunload", e => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
 
 (async () => {
   paintMine();
   const saved = localStorage.getItem("wm-name");
-  if (saved) $("name").value = saved;
+  if (saved) { $("name").value = saved; $("sjName").value = saved; $("smName").value = saved; }
+  try { const c = JSON.parse(sessionStorage.getItem("wm-santa") || "null"); if (c) { $("smName").value = c.name; $("smPin").value = c.pin; } } catch (e) {}
+  if (location.hash === "#santa" || location.hash === "#group") show(location.hash.slice(1));
   await load();
   if (saved) loadMineFromName();
 })();
